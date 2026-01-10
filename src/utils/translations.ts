@@ -11,6 +11,7 @@ export const translations = {
             findProperty: "Carikan Saya Properti",
             agents: "Agen",
             company: "Perusahaan",
+            apps: "Aplikasi",
             login: "Masuk",
             register: "Daftar",
             loginRegister: "Masuk / Daftar",

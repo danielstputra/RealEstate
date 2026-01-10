@@ -5,13 +5,17 @@ import { Button } from '../ui/Button';
 import { cn } from '../../utils/cn';
 import { useLanguage } from '../../context/LanguageContext';
 import { MegaMenu } from './MegaMenu';
+import { CompanyMenu } from './CompanyMenu';
+import { AgentMenu } from './AgentMenu';
 import { AuthModal } from '../features/AuthModal';
 import { PostAdModal } from '../features/PostAdModal';
+import { FindPropertyModal } from '../features/FindPropertyModal';
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [isAuthOpen, setIsAuthOpen] = useState(false);
     const [isPostAdOpen, setIsPostAdOpen] = useState(false);
+    const [isFindPropertyOpen, setIsFindPropertyOpen] = useState(false);
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const { language, setLanguage, t } = useLanguage();
     const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -92,38 +96,49 @@ export function Navbar() {
                                 onMouseLeave={handleMouseLeave}
                                 className="relative h-full flex items-center"
                             >
-                                <a
-                                    href="#"
-                                    onClick={(e) => e.preventDefault()}
+                                <Link
+                                    to="/search"
                                     className={cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white flex items-center gap-1 cursor-default", activeMenu === 'dijual' ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}
                                 >
                                     {t.nav.forSale}
                                     <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${activeMenu === 'dijual' ? 'rotate-180' : ''}`} />
-                                </a>
+                                </Link>
                             </div>
-
+                            <NavLink to="/search?type=baru" className={({ isActive }) => cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white", isActive ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}>{t.nav.newProperty}</NavLink>
+                            <a href="#" className="px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white text-white/70">{t.nav.bankAssets}</a>
+                            <NavLink to="/kpr" className={({ isActive }) => cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white", isActive ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}>{t.nav.mortgage}</NavLink>
+                        </div>
+                        <div className="flex gap-6 text-xs font-medium tracking-wider uppercase items-center">
+                            <button onClick={() => setIsFindPropertyOpen(true)} className="text-white/60 hover:text-white transition-colors uppercase">{t.nav.findProperty}</button>
                             <div
-                                onMouseEnter={() => handleMouseEnter('disewa')}
+                                onMouseEnter={() => handleMouseEnter('agent')}
                                 onMouseLeave={handleMouseLeave}
                                 className="relative h-full flex items-center"
                             >
                                 <a
                                     href="#"
                                     onClick={(e) => e.preventDefault()}
-                                    className={cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white flex items-center gap-1 cursor-default", activeMenu === 'disewa' ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}
+                                    className={cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white flex items-center gap-1 cursor-default text-sm normal-case tracking-normal", activeMenu === 'agent' ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}
                                 >
-                                    {t.nav.forRent}
-                                    <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${activeMenu === 'disewa' ? 'rotate-180' : ''}`} />
+                                    {t.nav.agents}
+                                    <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${activeMenu === 'agent' ? 'rotate-180' : ''}`} />
                                 </a>
                             </div>
-                            <NavLink to="/search?type=baru" className={({ isActive }) => cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white", isActive ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}>{t.nav.newProperty}</NavLink>
-                            <a href="#" className="px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white text-white/70">{t.nav.bankAssets}</a>
-                            <NavLink to="/kpr" className={({ isActive }) => cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white", isActive ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}>{t.nav.mortgage}</NavLink>
-                        </div>
-                        <div className="flex gap-6 opacity-60 text-xs font-medium tracking-wider uppercase">
-                            <a href="#" className="hover:opacity-100 transition-opacity hover:text-white">{t.nav.findProperty}</a>
-                            <a href="#" className="hover:opacity-100 transition-opacity hover:text-white">{t.nav.agents}</a>
-                            <a href="#" className="hover:opacity-100 transition-opacity hover:text-white">{t.nav.company}</a>
+                            <div
+                                onMouseEnter={() => handleMouseEnter('company')}
+                                onMouseLeave={handleMouseLeave}
+                                className="relative h-full flex items-center"
+                            >
+                                <a
+                                    href="#"
+                                    onClick={(e) => e.preventDefault()}
+                                    className={cn("px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:bg-white/10 hover:text-white flex items-center gap-1 cursor-default text-sm normal-case tracking-normal", activeMenu === 'company' ? "bg-white/15 text-white font-bold shadow-sm backdrop-blur-sm" : "text-white/70")}
+                                >
+                                    {t.nav.company}
+                                    <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${activeMenu === 'company' ? 'rotate-180' : ''}`} />
+                                </a>
+                            </div>
+                            <a href="#" className="text-white/60 hover:text-white transition-colors">{t.nav.apps}</a>
                         </div>
                     </div>
 
@@ -133,9 +148,14 @@ export function Navbar() {
                         onMouseEnter={() => handleMouseEnter('dijual')}
                         onMouseLeave={handleMouseLeave}
                     />
-                    <MegaMenu
-                        isOpen={activeMenu === 'disewa'}
-                        onMouseEnter={() => handleMouseEnter('disewa')}
+                    <CompanyMenu
+                        isOpen={activeMenu === 'company'}
+                        onMouseEnter={() => handleMouseEnter('company')}
+                        onMouseLeave={handleMouseLeave}
+                    />
+                    <AgentMenu
+                        isOpen={activeMenu === 'agent'}
+                        onMouseEnter={() => handleMouseEnter('agent')}
                         onMouseLeave={handleMouseLeave}
                     />
                 </div>
@@ -262,6 +282,7 @@ export function Navbar() {
                     setIsAuthOpen(true);
                 }}
             />
+            <FindPropertyModal isOpen={isFindPropertyOpen} onClose={() => setIsFindPropertyOpen(false)} />
         </>
     );
 }

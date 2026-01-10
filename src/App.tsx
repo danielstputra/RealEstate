@@ -3,6 +3,8 @@ import { MainLayout } from './components/layout/MainLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import Home from './pages/Home';
 import Search from './pages/Search';
+import Contact from './pages/Contact';
+import Blog from './pages/Blog';
 import PropertyDetail from './pages/PropertyDetail';
 import MyListings from './pages/SellerDashboard/MyListings';
 import CreateListing from './pages/SellerDashboard/CreateListing';
@@ -20,6 +22,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/property/:id" element={<PropertyDetail />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<Blog />} />
         </Route>
 
         {/* Dashboard Routes */}

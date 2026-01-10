@@ -10,10 +10,15 @@
   html {
     scroll-behavior: smooth;
     font-family: 'MaisonNeue-Demi', 'DM Sans', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   body {
-    @apply bg-slate-50 text-slate-800 antialiased;
+    @apply bg-slate-50 text-slate-800 antialiased transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-[#05111d] text-slate-100;
   }
 
   h1,

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../components/ui/Button';
 import { PropertyCard } from '../components/features/PropertyCard';
 import { MOCK_PROPERTIES } from '../utils/mockData';
-import { Search, Home as HomeIcon, Building2, Warehouse, Factory, Map, ArrowRight, Calculator, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
+import { Search, Home as HomeIcon, Building2, Warehouse, Map, ArrowRight, Calculator, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { Input } from '../components/ui/Input';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
@@ -14,7 +14,9 @@ export default function Home() {
     const [searchTab, setSearchTab] = useState<'dijual' | 'disewa' | 'baru'>('dijual');
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<'Rumah' | 'Apartemen' | 'Ruko' | 'Gudang' | 'Kavling' | null>(null);
     const sliderRef = useRef<HTMLDivElement>(null);
+    const recommendationRef = useRef<HTMLElement>(null);
     const navigate = useNavigate();
     const { t } = useLanguage();
 
@@ -77,11 +79,10 @@ export default function Home() {
     };
 
     const categories = [
-        { icon: HomeIcon, label: t.home.categories.house },
-        { icon: Building2, label: t.home.categories.apartment },
-        { icon: Warehouse, label: t.home.categories.shophouse },
-        { icon: Factory, label: t.home.categories.factory },
-        { icon: Map, label: t.home.categories.land },
+        { icon: HomeIcon, label: 'Rumah', count: '1,234' },
+        { icon: Building2, label: 'Ruko', count: '567' },
+        { icon: Warehouse, label: 'Gudang', count: '234' },
+        { icon: Map, label: 'Kavling', count: '890' },
     ];
 
     return (
@@ -164,7 +165,7 @@ export default function Home() {
                             </div>
 
                             {/* Search Box Card */}
-                            <div className="bg-[#0f2a50]/80 backdrop-blur-sm p-1 rounded-t-xl inline-flex">
+                            {/* <div className="bg-[#0f2a50]/80 backdrop-blur-sm p-1 rounded-t-xl inline-flex">
                                 <button
                                     onClick={() => setSearchTab('dijual')}
                                     className={`px-6 py-2 text-sm font-bold rounded-t-lg transition-colors ${searchTab === 'dijual' ? 'bg-white text-[#0f2a50]' : 'text-white hover:text-blue-200'}`}
@@ -183,7 +184,7 @@ export default function Home() {
                                 >
                                     {t.nav.newProperty}
                                 </button>
-                            </div>
+                            </div> */}
 
                             {/* Search Box Container - Clean & Unified */}
                             <div className="bg-white p-2 rounded-lg shadow-2xl relative z-50 flex gap-2 items-center">
@@ -247,34 +248,50 @@ export default function Home() {
                                 )}
                             </div>
 
+                            {/* Categories - Elegant Floating below Search */}
+                            <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {categories.map((cat, idx) => (
+                                    <motion.button
+                                        key={idx}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5 + idx * 0.1 }}
+                                        className={`group/cat relative overflow-hidden rounded-xl backdrop-blur-md border p-4 flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${selectedCategory === cat.label
+                                            ? 'bg-white border-white ring-2 ring-[#123C69]/20'
+                                            : 'bg-white/10 border-white/20 hover:bg-white hover:border-white'
+                                            }`}
+                                        onClick={() => {
+                                            const newCategory = selectedCategory === cat.label ? null : cat.label as any;
+                                            setSelectedCategory(newCategory);
+                                            if (newCategory && recommendationRef.current) {
+                                                console.log("Scrolling to:", recommendationRef.current);
+                                                recommendationRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }
+                                        }}
+                                    >
+                                        <div className={`p-2 rounded-full transition-colors ${selectedCategory === cat.label
+                                            ? 'bg-[#123C69]/10'
+                                            : 'bg-white/10 group-hover/cat:bg-[#123C69]/10'
+                                            }`}>
+                                            <cat.icon className={`h-6 w-6 transition-colors ${selectedCategory === cat.label
+                                                ? 'text-[#123C69]'
+                                                : 'text-white group-hover/cat:text-[#123C69]'
+                                                }`} />
+                                        </div>
+                                        <span className={`font-medium text-sm tracking-wide transition-colors ${selectedCategory === cat.label
+                                            ? 'text-[#123C69]'
+                                            : 'text-white group-hover/cat:text-[#123C69]'
+                                            }`}>{cat.label}</span>
+                                    </motion.button>
+                                ))}
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Categories */}
-            <div className="relative z-20 -mt-10 mb-8 container mx-auto px-4 max-w-5xl">
-                <div className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] p-6 grid grid-cols-5 gap-6 justify-items-center relative overflow-hidden border border-white/40 ring-1 ring-white/60">
-                    {/* Subtle Gold Sheen */}
-                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#CBA135]/50 to-transparent"></div>
 
-                    {categories.map((cat, idx) => (
-                        <button
-                            key={idx}
-                            className="flex flex-col items-center gap-3 group cursor-pointer transition-all duration-500 hover:-translate-y-1 relative"
-                            onClick={() => navigate('/search')}
-                        >
-                            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-white to-slate-50 border border-white shadow-sm flex items-center justify-center text-slate-600 transition-all duration-500 group-hover:from-[#123C69] group-hover:to-[#0a1e35] group-hover:text-[#CBA135] group-hover:shadow-[0_10px_30px_-5px_rgba(18,60,105,0.5)] group-hover:border-[#CBA135]/30">
-                                <cat.icon className="h-7 w-7 transition-transform duration-500 group-hover:scale-110" />
-                            </div>
-                            <span className="text-sm font-medium text-slate-600 group-hover:text-[#123C69] group-hover:font-semibold transition-all duration-300 tracking-wide">{cat.label}</span>
-
-                            {/* Active Indicator Dot */}
-                            <div className="w-1 h-1 rounded-full bg-[#CBA135] opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1"></div>
-                        </button>
-                    ))}
-                </div>
-            </div>
 
             <div className="container mx-auto px-4 py-16 space-y-16">
 
@@ -307,6 +324,48 @@ export default function Home() {
                     </div>
                 </div>
 
+                {/* Recommendation Section */}
+                <section ref={recommendationRef} className="scroll-mt-24">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-900">
+                                {selectedCategory ? `Rekomendasi ${selectedCategory} Untukmu` : 'Rekomendasi Sesuai Pencarianmu'}
+                            </h2>
+                            <p className="text-slate-500">
+                                {selectedCategory
+                                    ? `Pilihan ${selectedCategory} terbaik yang kami kurasi khusus untuk Anda`
+                                    : 'Properti yang mungkin Anda sukai berdasarkan pencarian terakhir'}
+                            </p>
+                        </div>
+                        <Button
+                            variant="outline"
+                            onClick={() => navigate('/search', { state: { category: selectedCategory } })}
+                        >
+                            Lihat Semua
+                        </Button>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-6">
+                        {MOCK_PROPERTIES.filter(p => !selectedCategory || p.type === selectedCategory).length > 0 ? (
+                            MOCK_PROPERTIES
+                                .filter(p => !selectedCategory || p.type === selectedCategory)
+                                .slice(0, 3)
+                                .map((property) => (
+                                    <div key={`rec-${property.id}`} className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                                        <PropertyCard property={property} />
+                                    </div>
+                                ))
+                        ) : (
+                            <div className="text-center py-12 w-full bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <p className="text-slate-500 text-lg">Tidak ada properti ditemukan untuk kategori ini.</p>
+                                <Button variant="ghost" onClick={() => setSelectedCategory(null)} className="mt-2 text-[#123C69]">
+                                    Lihat Semua Kategori
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
                 {/* Featured Properties */}
                 <section className="relative group/slider">
                     <div className="flex items-center justify-between mb-8">
@@ -338,11 +397,24 @@ export default function Home() {
                         ref={sliderRef}
                         className="flex overflow-x-auto gap-6 pb-8 pt-2 snap-x scrollbar-hide px-1"
                     >
-                        {MOCK_PROPERTIES.slice(0, 10).map((property) => (
-                            <div key={property.id} className="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] snap-start first:pl-2 last:pr-2">
-                                <PropertyCard property={property} />
-                            </div>
-                        ))}
+                        <div
+                            ref={sliderRef}
+                            className="flex overflow-x-auto gap-6 pb-8 pt-2 snap-x scrollbar-hide px-1"
+                        >
+                            {MOCK_PROPERTIES.length > 0 ? (
+                                MOCK_PROPERTIES
+                                    .slice(0, 10)
+                                    .map((property) => (
+                                        <div key={property.id} className="min-w-[280px] md:min-w-[320px] lg:min-w-[350px] snap-start first:pl-2 last:pr-2">
+                                            <PropertyCard property={property} />
+                                        </div>
+                                    ))
+                            ) : (
+                                <div className="w-full text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                    <p className="text-slate-500">Tidak ada properti unggulan saat ini.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
 
