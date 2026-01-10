@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { PageLoader } from './components/ui/PageLoader';
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -7,6 +7,7 @@ import Search from './pages/Search';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import PropertyDetail from './pages/PropertyDetail';
+import NotFound from './pages/NotFound';
 import MyListings from './pages/SellerDashboard/MyListings';
 import CreateListing from './pages/SellerDashboard/CreateListing';
 import Messages from './pages/SellerDashboard/Messages';
@@ -26,6 +27,8 @@ function App() {
           <Route path="/property/:id" element={<PropertyDetail />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/not-found" element={<NotFound />} />
+          <Route path="*" element={<Navigate to="/not-found" replace />} />
         </Route>
 
         {/* Dashboard Routes */}
