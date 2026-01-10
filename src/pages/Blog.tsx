@@ -4,6 +4,9 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { MOCK_BLOG_POSTS } from '../utils/mockBlogData';
 
+const FALLBACK_POST_IMAGE = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200";
+const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150";
+
 export default function Blog() {
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [searchTerm, setSearchTerm] = useState('');
@@ -14,6 +17,13 @@ export default function Blog() {
     // Pagination state
     const [visibleCount, setVisibleCount] = useState(6);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+
+    // Initial loading effect
+    useEffect(() => {
+        const timer = setTimeout(() => setIsPageLoading(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Reset visible count when filters or search change
     useEffect(() => {
@@ -69,6 +79,10 @@ export default function Blog() {
         setIsLoading(false);
     };
 
+    if (isPageLoading) {
+        return <BlogPageShimmer />;
+    }
+
     return (
         <div className="bg-slate-50 min-h-screen pb-20 selection:bg-[#CBA135]/30">
             {/* Hero Section - Majestic Editorial Design */}
@@ -95,7 +109,7 @@ export default function Blog() {
                         <br className="hidden md:block" /> by Unitin
                     </h1>
 
-                    <p className="text-slate-300 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 font-light tracking-wide">
+                    <p className="text-slate-300 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 font-light tracking-wide mb-12">
                         Eksplorasi mendalam tentang hunian masa depan, strategi investasi properti, dan narasi desain yang mendefinisikan kemewahan modern.
                     </p>
                 </div>
@@ -108,7 +122,11 @@ export default function Blog() {
                     <img
                         src={featuredPost.imageUrl}
                         alt={featuredPost.title}
-                        className="w-full h-[600px] md:h-[800px] object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                        className="w-full h-[600px] md:h-[800px] object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = FALLBACK_POST_IMAGE;
+                        }}
                     />
 
                     {/* Content Overlay - Glassmorphism Box */}
@@ -140,7 +158,15 @@ export default function Blog() {
                                     <div className="flex items-center gap-4">
                                         <div className="relative">
                                             <div className="absolute inset-0 bg-[#CBA135] rounded-full blur-md opacity-30"></div>
-                                            <img src={featuredPost.authorAvatar} alt={featuredPost.author} className="w-14 h-14 rounded-full border-2 border-[#CBA135]/50 relative z-10 object-cover" />
+                                            <img
+                                                src={featuredPost.authorAvatar}
+                                                alt={featuredPost.author}
+                                                className="w-14 h-14 rounded-full border-2 border-[#CBA135]/50 relative z-10 object-cover"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = FALLBACK_AVATAR;
+                                                }}
+                                            />
                                         </div>
                                         <div>
                                             <p className="text-white font-bold text-base">{featuredPost.author}</p>
@@ -239,12 +265,18 @@ export default function Blog() {
                         {displayPosts.map((post, index) => (
                             <BlogCard key={post.id} post={post} index={index} />
                         ))}
+                        {isLoading && Array.from({ length: 3 }).map((_, i) => (
+                            <BlogShimmer key={i} index={displayPosts.length + i} />
+                        ))}
                     </div>
                 ) : (
                     /* Default view - Grid only (Featured is already at the top) */
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-24">
                         {displayPosts.map((post, index) => (
                             <BlogCard key={post.id} post={post} index={index} />
+                        ))}
+                        {isLoading && Array.from({ length: 3 }).map((_, i) => (
+                            <BlogShimmer key={i} index={displayPosts.length + i} />
                         ))}
                     </div>
                 )}
@@ -354,6 +386,10 @@ function BlogCard({ post, index }: { post: any, index: number }) {
                     src={post.imageUrl}
                     alt={post.title}
                     className="w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = FALLBACK_POST_IMAGE;
+                    }}
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e35]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-end p-8">
@@ -388,7 +424,15 @@ function BlogCard({ post, index }: { post: any, index: number }) {
                     <div className="flex items-center gap-5">
                         <div className="relative">
                             <div className="absolute inset-0 bg-slate-200 rounded-full blur-sm opacity-0 group-hover:opacity-50 transition-opacity"></div>
-                            <img src={post.authorAvatar} alt={post.author} className="w-12 h-12 rounded-full border-2 border-white shadow-sm relative z-10 object-cover" />
+                            <img
+                                src={post.authorAvatar}
+                                alt={post.author}
+                                className="w-12 h-12 rounded-full border-2 border-white shadow-sm relative z-10 object-cover"
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = FALLBACK_AVATAR;
+                                }}
+                            />
                         </div>
                         <div>
                             <p className="text-base font-bold text-slate-900 leading-none">{post.author}</p>
@@ -400,6 +444,107 @@ function BlogCard({ post, index }: { post: any, index: number }) {
                             <Share2 className="w-5 h-5" />
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Sub-component for Shimmer Placeholder (Skeleton)
+function BlogShimmer({ index }: { index: number }) {
+    return (
+        <div
+            className="group flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-[0_8px_40px_rgba(0,0,0,0.04)] animate-in fade-in zoom-in-95 duration-700 animate-pulse-subtle"
+            style={{ animationDelay: `${index * 100}ms` }}
+        >
+            {/* Image Placeholder */}
+            <div className="relative h-72 lg:h-80 bg-slate-100/80 overflow-hidden shimmer-mask">
+                <div className="absolute top-6 left-6 w-28 h-8 bg-slate-200/50 rounded-full blur-[0.5px]"></div>
+            </div>
+
+            {/* Content Container */}
+            <div className="p-10 md:p-12 flex flex-col flex-1">
+                <div className="flex items-center gap-6 mb-8">
+                    <div className="w-24 h-5 bg-slate-100 rounded-md shimmer-mask"></div>
+                    <div className="w-2 h-2 rounded-full bg-slate-200"></div>
+                    <div className="w-28 h-5 bg-slate-100 rounded-md shimmer-mask"></div>
+                </div>
+
+                <div className="space-y-4 mb-8">
+                    <div className="w-full h-10 bg-slate-100 rounded-lg shimmer-mask"></div>
+                    <div className="w-[85%] h-10 bg-slate-100 rounded-lg shimmer-mask"></div>
+                </div>
+
+                <div className="space-y-3 mb-10 flex-1">
+                    <div className="w-full h-4 bg-slate-100/60 rounded-md shimmer-mask"></div>
+                    <div className="w-full h-4 bg-slate-100/60 rounded-md shimmer-mask"></div>
+                    <div className="w-[70%] h-4 bg-slate-100/60 rounded-md shimmer-mask"></div>
+                </div>
+
+                <div className="pt-10 border-t border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 rounded-full bg-slate-100/80 shimmer-mask"></div>
+                        <div className="space-y-2.5">
+                            <div className="w-32 h-5 bg-slate-100 rounded-md shimmer-mask"></div>
+                            <div className="w-20 h-4 bg-slate-100/60 rounded-md shimmer-mask"></div>
+                        </div>
+                    </div>
+                    <div className="w-11 h-11 rounded-full bg-slate-100/80 shimmer-mask"></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function BlogPageShimmer() {
+    return (
+        <div className="bg-slate-50 min-h-screen pb-20 selection:bg-[#CBA135]/30">
+            {/* Hero Shimmer */}
+            <div className="relative bg-[#0a1e35] pt-32 pb-48 lg:pb-72 overflow-hidden">
+                <div className="container mx-auto px-4 max-w-7xl relative z-10 text-center space-y-12">
+                    <div className="w-48 h-10 bg-white/5 rounded-full mx-auto shimmer-mask animate-pulse-subtle"></div>
+                    <div className="space-y-6">
+                        <div className="w-full max-w-4xl h-24 bg-white/10 rounded-[2rem] mx-auto shimmer-mask animate-pulse-subtle shadow-2xl"></div>
+                        <div className="w-3/4 h-24 bg-white/5 rounded-[2rem] mx-auto shimmer-mask animate-pulse-subtle"></div>
+                    </div>
+                    <div className="w-full max-w-2xl h-8 bg-white/5 rounded-full mx-auto shimmer-mask animate-pulse-subtle mb-10"></div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 max-w-7xl -mt-48 lg:-mt-72 relative z-20">
+                {/* Featured Shimmer Card */}
+                <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 bg-slate-200">
+                    <div className="w-full h-[600px] md:h-[800px] bg-slate-200 shimmer-mask animate-pulse-subtle"></div>
+                    <div className="absolute inset-x-0 bottom-0 p-6 md:p-12 z-20">
+                        <div className="bg-white/10 backdrop-blur-3xl border border-white/20 p-8 md:p-12 rounded-[2.5rem] shadow-2xl max-w-5xl">
+                            <div className="w-40 h-8 bg-white/20 rounded-full mb-8 shimmer-mask animate-pulse-subtle"></div>
+                            <div className="w-full h-16 bg-white/30 rounded-2xl mb-8 shimmer-mask animate-pulse-subtle"></div>
+                            <div className="w-2/3 h-10 bg-white/20 rounded-xl mb-12 shimmer-mask animate-pulse-subtle"></div>
+                            <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 rounded-full bg-white/40 shimmer-mask animate-pulse-subtle"></div>
+                                <div className="space-y-3">
+                                    <div className="w-32 h-6 bg-white/30 rounded-lg shimmer-mask animate-pulse-subtle"></div>
+                                    <div className="w-24 h-4 bg-white/20 rounded-md shimmer-mask animate-pulse-subtle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Filter Bar Shimmer */}
+                <div className="mt-28 mb-16 px-4">
+                    <div className="bg-white/80 backdrop-blur-xl border border-white p-4 rounded-[2.5rem] shadow-xl flex items-center gap-4 overflow-hidden">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="shrink-0 w-32 h-12 bg-slate-100 rounded-2xl shimmer-mask animate-pulse-subtle"></div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Grid Shimmer */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-24">
+                    {[1, 2, 3].map(i => (
+                        <BlogShimmer key={i} index={i} />
+                    ))}
                 </div>
             </div>
         </div>

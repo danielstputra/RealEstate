@@ -14,11 +14,16 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-800 antialiased transition-colors duration-300;
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-800);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .dark body {
-    @apply bg-[#05111d] text-slate-100;
+    background-color: #05111d;
+    color: var(--color-slate-100);
   }
 
   h1,
@@ -68,5 +73,47 @@
   .shadow-premium:hover {
     box-shadow: 0 20px 25px -5px rgba(18, 60, 105, 0.1),
       0 10px 10px -5px rgba(18, 60, 105, 0.04);
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-150%) skewX(-20deg);
+    }
+
+    100% {
+      transform: translateX(250%) skewX(-20deg);
+    }
+  }
+
+  .shimmer-mask {
+    @apply relative overflow-hidden bg-slate-100/50;
+  }
+
+  .shimmer-mask::after {
+    @apply absolute inset-0 content-[''];
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 100%);
+    animation: shimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    filter: blur(5px);
+  }
+
+  @keyframes pulse-subtle {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.85;
+      transform: scale(0.995);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 3s ease-in-out infinite;
   }
 }

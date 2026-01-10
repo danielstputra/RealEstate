@@ -40,7 +40,7 @@ export function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-[80] bg-[#0a1e35]/85 backdrop-blur-md text-white border-b border-white/10 shadow-sm transition-all duration-300">
+            <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#0a1e35]/90 backdrop-blur-md text-white border-b border-white/10 shadow-sm transition-all duration-300">
                 {/* Top Row: Logo & Main Actions */}
                 <div className="container mx-auto px-6 h-20">
                     <div className="flex h-full items-center justify-between">

@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, MessageSquare, Clock } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -7,6 +6,16 @@ import { Select } from '../components/ui/Select';
 
 export default function Contact() {
     const [subject, setSubject] = useState('');
+    const [isPageLoading, setIsPageLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsPageLoading(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isPageLoading) {
+        return <ContactPageShimmer />;
+    }
 
     return (
         <div className="bg-slate-50 min-h-screen pb-20">
@@ -192,6 +201,58 @@ export default function Contact() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ContactPageShimmer() {
+    return (
+        <div className="bg-slate-50 min-h-screen pb-20 selection:bg-[#CBA135]/30">
+            {/* Hero Shimmer */}
+            <div className="relative bg-[#123C69] pt-32 pb-48 lg:pb-72 overflow-hidden">
+                <div className="container mx-auto px-4 max-w-7xl relative z-10 text-center space-y-12">
+                    <div className="w-40 h-8 bg-white/5 rounded-full mx-auto shimmer-mask animate-pulse-subtle"></div>
+                    <div className="w-full max-w-3xl h-20 bg-white/10 rounded-2xl mx-auto shimmer-mask animate-pulse-subtle"></div>
+                    <div className="w-full max-w-2xl h-12 bg-white/5 rounded-xl mx-auto shimmer-mask animate-pulse-subtle"></div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 max-w-7xl -mt-20 relative z-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Left Side Shimmer */}
+                    <div className="lg:col-span-4 space-y-8">
+                        <div className="bg-white rounded-2xl p-8 h-64 shadow-xl border border-slate-100 shimmer-mask animate-pulse-subtle"></div>
+                        <div className="bg-[#0a1e35] rounded-2xl p-8 h-80 shadow-2xl shimmer-mask animate-pulse-subtle opacity-90"></div>
+                    </div>
+
+                    {/* Right Side Shimmer */}
+                    <div className="lg:col-span-8">
+                        <div className="bg-white rounded-3xl p-10 h-full shadow-2xl border border-slate-100 animate-pulse-subtle">
+                            <div className="flex justify-between items-center mb-12">
+                                <div className="space-y-3">
+                                    <div className="w-48 h-10 bg-slate-100 rounded-lg shimmer-mask"></div>
+                                    <div className="w-64 h-5 bg-slate-50 rounded-md shimmer-mask"></div>
+                                </div>
+                                <div className="w-32 h-10 bg-blue-50 rounded-full shimmer-mask"></div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-8 mb-10">
+                                <div className="h-20 bg-slate-50 rounded-xl shimmer-mask"></div>
+                                <div className="h-20 bg-slate-50 rounded-xl shimmer-mask"></div>
+                            </div>
+                            <div className="h-16 bg-slate-50 rounded-xl mb-10 shimmer-mask"></div>
+                            <div className="h-48 bg-slate-50 rounded-xl mb-12 shimmer-mask"></div>
+                            <div className="flex justify-end">
+                                <div className="w-64 h-16 bg-[#123C69]/10 rounded-xl shimmer-mask"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Map Shimmer */}
+                <div className="mt-20">
+                    <div className="bg-white p-4 rounded-3xl shadow-xl h-96 border border-slate-100 shimmer-mask animate-pulse-subtle"></div>
                 </div>
             </div>
         </div>

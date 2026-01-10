@@ -29,6 +29,13 @@ export default function Search() {
     // Pagination state
     const [visibleCount, setVisibleCount] = useState(6);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+
+    // Initial loading effect
+    useEffect(() => {
+        const timer = setTimeout(() => setIsPageLoading(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Reset visible count when filters or search change
     useEffect(() => {
@@ -94,44 +101,48 @@ export default function Search() {
         setIsLoading(false);
     };
 
+    if (isPageLoading) {
+        return <SearchPageShimmer />;
+    }
+
     return (
         <div className="min-h-screen bg-slate-50 pb-20" onClick={() => setActivePopup(null)}>
-            {/* Sticky Header Section */}
-            <div className={`sticky top-[80px] z-30 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all duration-300 supports-[backdrop-filter]:bg-white/80 ${isScrolled ? 'py-2' : 'py-4'}`}>
+            {/* Sticky Header Section - Clean & Flush */}
+            <div className={`sticky top-20 md:top-32 z-30 bg-white border-b border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] transition-all duration-500 ${isScrolled ? 'py-5' : 'pt-8 pb-8'}`}>
                 <div className="container mx-auto px-4 max-w-7xl">
-                    {/* Top Search Bar */}
-                    <div className={`flex flex-col lg:flex-row gap-4 transition-all duration-300 ease-in-out overflow-hidden ${isScrolled ? 'max-h-0 opacity-0 mb-0' : 'max-h-40 opacity-100 mb-4'}`}>
-                        <div className="flex-1 relative flex items-center gap-3">
-                            <div className="relative flex-1 group">
+                    {/* Top Search Bar - Ultra Condensed & Aligned */}
+                    <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isScrolled ? 'max-h-0 opacity-0 mb-0 pointer-events-none scale-95' : 'max-h-40 opacity-100 mb-3 scale-100'}`}>
+                        <div className="flex flex-row items-center gap-3">
+                            <div className="flex-1 relative group">
                                 <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-slate-400 group-focus-within:text-[#123C69] transition-colors">
                                     <SearchIcon className="h-5 w-5" />
                                 </div>
                                 <Input
                                     placeholder="Cari lokasi, nama properti, atau area..."
-                                    className="pl-12 pr-12 h-12 bg-slate-50 border-slate-200 focus:bg-white focus:border-[#123C69] focus:border-2 focus:ring-0 transition-all rounded-xl shadow-sm text-base"
+                                    className="pl-12 pr-12 h-14 bg-slate-50 border-slate-200 focus:bg-white focus:border-[#123C69] focus:border-2 focus:ring-0 transition-all rounded-2xl shadow-sm text-base placeholder:text-slate-400"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                                 {searchTerm && (
                                     <button
                                         onClick={() => setSearchTerm('')}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-200 transition-all"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-200 transition-all"
                                     >
                                         <Plus className="h-4 w-4 rotate-45" />
                                     </button>
                                 )}
                             </div>
-                            <Button className="h-12 px-8 bg-[#123C69] hover:bg-[#0a2340] text-white rounded-xl shadow-lg shadow-blue-900/20 font-medium tracking-wide transition-all hover:-translate-y-0.5 active:translate-y-0">
+                            <Button className="h-14 px-10 bg-[#123C69] hover:bg-[#0a2340] text-white rounded-2xl shadow-lg shadow-blue-900/20 font-bold tracking-wide transition-all hover:shadow-blue-900/30 active:scale-95">
                                 Cari
                             </Button>
-                            <Button variant="outline" className="h-12 w-12 p-0 border-slate-200 text-slate-600 hover:border-[#123C69] hover:text-[#123C69] hidden md:flex items-center justify-center rounded-xl bg-white shadow-sm hover:shadow-md transition-all">
+                            <Button variant="outline" className="h-14 w-14 p-0 border-slate-200 text-slate-500 hover:border-[#123C69] hover:text-[#123C69] hidden md:flex items-center justify-center rounded-2xl bg-white shadow-sm hover:shadow-md transition-all">
                                 <Bookmark className="h-5 w-5" />
                             </Button>
                         </div>
                     </div>
 
-                    {/* Filter Bar */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide mask-linear-fade relative" onClick={(e) => e.stopPropagation()}>
+                    {/* Filter Bar - Streamlined */}
+                    <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide relative" onClick={(e) => e.stopPropagation()}>
                         {/* Main Filter Toggle - Primary Action */}
                         <Button
                             variant="outline"
@@ -434,6 +445,15 @@ export default function Search() {
                                     <PropertyCard property={property} />
                                 </div>
                             ))}
+                            {/* Incremental Shimmer Loading */}
+                            {isLoading && (
+                                <>
+                                    <PropertyShimmer />
+                                    <PropertyShimmer />
+                                    <PropertyShimmer />
+                                    <PropertyShimmer />
+                                </>
+                            )}
                         </div>
 
                         {/* Pagination / Load More */}
@@ -487,7 +507,7 @@ export default function Search() {
                     {/* Right Column: Sidebar / Ads */}
                     <div className="hidden lg:block lg:col-span-4 space-y-8">
                         {/* Banner Ad */}
-                        <div className="sticky top-[160px]">
+                        <div className="sticky top-[220px]">
                             <div className="rounded-2xl overflow-hidden shadow-2xl shadow-blue-900/20 border border-white/20 block group cursor-pointer relative h-[600px] transform transition-all hover:scale-[1.02] duration-500 hover:shadow-blue-900/30">
                                 <img
                                     src="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&q=80&w=800"
@@ -506,6 +526,104 @@ export default function Search() {
                                         Lihat Unit
                                     </Button>
                                     <p className="text-center text-white/50 text-[10px] mt-4 uppercase tracking-widest font-medium">Sponsored Content</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function PropertyShimmer() {
+    return (
+        <div className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm transition-all duration-300 animate-pulse-subtle">
+            <div className="h-48 bg-slate-100 shimmer-mask"></div>
+            <div className="p-5 space-y-4">
+                <div className="flex justify-between items-start">
+                    <div className="w-2/3 h-5 bg-slate-50 rounded-md shimmer-mask"></div>
+                    <div className="w-8 h-8 rounded-full bg-slate-50 shimmer-mask"></div>
+                </div>
+                <div className="w-full h-4 bg-slate-50 rounded-md shimmer-mask"></div>
+                <div className="w-1/2 h-6 bg-[#123C69]/10 rounded-md shimmer-mask"></div>
+                <div className="pt-4 border-t border-slate-50 flex gap-4">
+                    <div className="flex-1 h-4 bg-slate-50 rounded-md shimmer-mask"></div>
+                    <div className="flex-1 h-4 bg-slate-50 rounded-md shimmer-mask"></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function SearchPageShimmer() {
+    return (
+        <div className="min-h-screen bg-slate-50 pb-20">
+            {/* Sticky Header Shimmer */}
+            <div className="sticky top-20 md:top-32 z-30 bg-white border-b border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] pt-8 pb-8">
+                <div className="container mx-auto px-4 max-w-7xl">
+                    <div className="flex flex-row items-center gap-3 mb-3">
+                        <div className="flex-1 h-14 bg-slate-100 rounded-2xl shimmer-mask"></div>
+                        <div className="w-32 h-14 bg-[#123C69]/10 rounded-2xl shimmer-mask"></div>
+                        <div className="w-14 h-14 bg-slate-100 rounded-2xl shimmer-mask"></div>
+                    </div>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className="shrink-0 w-28 h-9 bg-slate-50 rounded-full shimmer-mask"></div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 py-8 max-w-7xl">
+                {/* Info Bar Shimmer */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-slate-100 rounded-lg shimmer-mask"></div>
+                            <div className="w-96 h-10 bg-slate-100 rounded-xl shimmer-mask"></div>
+                        </div>
+                        <div className="w-64 h-5 bg-slate-100 rounded-md shimmer-mask ml-11"></div>
+                    </div>
+                    <div className="flex gap-3">
+                        <div className="w-32 h-10 bg-white border border-slate-100 rounded-lg shimmer-mask"></div>
+                        <div className="w-40 h-10 bg-white border border-slate-100 rounded-lg shimmer-mask"></div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="lg:col-span-8 space-y-8">
+                        {/* Highlight Card Shimmer */}
+                        <div className="bg-[#123C69] rounded-xl p-8 h-24 shadow-xl shimmer-mask animate-pulse-subtle opacity-90"></div>
+
+                        {/* Property Grid Shimmer */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map(i => (
+                                <PropertyShimmer key={i} />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Sidebar Shimmer - Detailed Banner Ad */}
+                    <div className="hidden lg:col-span-4 lg:block">
+                        <div className="sticky top-[220px]">
+                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 animate-pulse-subtle">
+                                <div className="relative h-[600px] bg-slate-100 shimmer-mask">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#123C69]/50 via-transparent to-transparent"></div>
+                                    <div className="absolute bottom-0 left-0 right-0 p-8 space-y-4">
+                                        <div className="w-32 h-6 bg-[#CBA135]/20 rounded-lg shimmer-mask"></div>
+                                        <div className="space-y-2">
+                                            <div className="w-full h-10 bg-white/20 rounded-xl shimmer-mask"></div>
+                                            <div className="w-2/3 h-10 bg-white/20 rounded-xl shimmer-mask"></div>
+                                        </div>
+                                        <div className="w-12 h-1.5 bg-[#CBA135]/30 rounded-full"></div>
+                                        <div className="space-y-2">
+                                            <div className="w-full h-4 bg-white/10 rounded-md shimmer-mask"></div>
+                                            <div className="w-[80%] h-4 bg-white/10 rounded-md shimmer-mask"></div>
+                                        </div>
+                                        <div className="w-full h-14 bg-white/20 rounded-xl shimmer-mask mt-4"></div>
+                                        <div className="w-32 h-3 bg-white/5 mx-auto rounded-full shimmer-mask"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
