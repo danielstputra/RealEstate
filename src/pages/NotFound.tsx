@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Home, RefreshCw } from 'lucide-react';
+import { Home, RefreshCw } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 const NotFound: React.FC = () => {
