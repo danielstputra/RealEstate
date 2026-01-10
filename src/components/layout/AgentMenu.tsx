@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Search, ArrowRight, Star, MapPin, BadgeCheck, PlusSquare } from 'lucide-react';
+import { Search, ArrowRight, Star, MapPin, PlusSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/Button';
 

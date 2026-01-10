@@ -114,6 +114,7 @@ export const translations = {
             findProperty: "Find Me a Property",
             agents: "Agents",
             company: "Company",
+            apps: "Apps",
             login: "Login",
             register: "Register",
             loginRegister: "Login / Register",

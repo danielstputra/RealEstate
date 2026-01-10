@@ -11,7 +11,6 @@ import { PromoPopup } from '../components/features/PromoPopup';
 
 export default function Home() {
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [searchTab, setSearchTab] = useState<'dijual' | 'disewa' | 'baru'>('dijual');
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<'Rumah' | 'Apartemen' | 'Ruko' | 'Gudang' | 'Kavling' | null>(null);

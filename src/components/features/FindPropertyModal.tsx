@@ -1,4 +1,4 @@
-import { X, CheckCircle2, Home, MapPin, Phone, Building2, Send, CheckSquare, Square } from 'lucide-react';
+import { X, CheckCircle2, Home, MapPin, Phone, Send, CheckSquare } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -11,7 +11,6 @@ interface FindPropertyModalProps {
 export function FindPropertyModal({ isOpen, onClose }: FindPropertyModalProps) {
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [wantKPR, setWantKPR] = useState(false);
-    const [transactionType, setTransactionType] = useState<'beli'>('beli'); // Default only option
 
     const categories = [
         { id: 'rumah', label: 'Rumah' },
